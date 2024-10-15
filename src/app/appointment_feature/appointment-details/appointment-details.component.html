@@ -1,0 +1,105 @@
+@if(successMessage.length>0){
+  <div class="alert alert-success alert-dismissible">
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <strong>Success!</strong>{{successMessage}}
+</div>
+}
+@if(errorMessage.length>0){
+<div class="alert alert-warning alert-dismissible">
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <strong>Failed!</strong>{{errorMessage}}
+</div>
+}
+
+<div class="page-wrapper mt-3">
+  <div class="container mt-3 mb-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <!-- Breadcrumb -->
+          <nav aria-label="breadcrumb" class="card-header">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a [routerLink]="['/']" class="text-decoration-none">Home</a></li>
+              <li class="breadcrumb-item"><a [routerLink]="['/appointments']" class="text-decoration-none">Appointments</a></li>
+              <li class="breadcrumb-item active text-black" aria-current="page">View Appointment</li>
+            </ol>
+          </nav>
+          
+          <!-- Appointment Details Form -->
+          <div class="card-body">
+            <form class="p-4 rounded">
+              <!-- Patient Details -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label mb-1"><b>Patient Name</b></label>
+                    <div class="form-control-plaintext">{{ Patient?.patientName || 'N/A' }}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label"><b>Purpose of Visit</b></label>
+                    <div class="form-control-plaintext">{{ Appointment?.purposeOfVisit || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Date and Time -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label"><b>Date</b></label>
+                    <div class="form-control-plaintext">{{ Appointment?.date || 'N/A' }}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label"><b>Time</b></label>
+                    <div class="form-control-plaintext">{{ Appointment?.time || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Patient Contact Information -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label"><b>Patient Email</b></label>
+                    <div class="form-control-plaintext">{{ Appointment?.email || 'N/A' }}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label"><b>Patient Mobile Number</b></label>
+                    <div class="form-control-plaintext">{{ Appointment?.phone || 'N/A' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message -->
+              <div class="form-group mb-3">
+                <label class="form-label"><b>Message</b></label>
+                <div class="form-control-plaintext">{{ Appointment?.message || 'No message available' }}</div>
+              </div>
+
+              <!-- Appointment Status -->
+              <div class="form-group mb-4">
+                <label class="form-label"><b>Appointment Status</b></label>
+                <div class="form-control-plaintext">
+                  {{ Appointment?.status === AppointmentStatus.Scheduled ? 'Active' : 'Inactive' }}
+                </div>
+              </div>
+
+              <!-- Navigation Buttons -->
+              <div class=" d-flex justify-content-between">
+                <a (click)="goBack()" class="btn btn-secondary">Back to Appointments</a>
+                <button type="button" [class.disabled-cursor]="Appointment?.status !== 0"  [disabled]="Appointment?.status !== 0" 
+               (click)="cancelAppointment(Appointment?.id)" class="cancel-btn btn btn-danger">Cancel Appointment</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

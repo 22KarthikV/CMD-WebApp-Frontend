@@ -1,0 +1,11 @@
+.custom-button {
+  width: 200px; 
+  border-radius: 25px; 
+  padding: 10px 20px; 
+}
+
+.required-star {
+  color: rgb(241, 158, 158);
+  margin-left: 2px;
+  font-weight: bold;
+}

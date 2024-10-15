@@ -1,0 +1,174 @@
+@if(successMessage.length > 0) {
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong> {{successMessage}}</strong>
+    </div>
+}
+@if(errorMessage.length > 0) {
+    <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>Failed!</strong> {{errorMessage}}
+    </div>
+}
+<div class="container mt-3 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="card-header">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a [routerLink]="['/']" class="text-black text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item"><a [routerLink]="['/appointments']" class="text-black text-decoration-none">Appointments</a></li>
+                        <li class="breadcrumb-item active text-black" aria-current="page">Edit Appointment</li>
+                    </ol>
+                </nav>
+               
+                <div class="card-body">
+                    <!-- Form Starts -->
+                    <form [formGroup]="reactiveForm" (ngSubmit)="onSubmit()">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="AppointmentId" class="form-label">Appointment Id</label>
+                                    <input disabled id="AppointmentId" name="AppointmentId" type="text" class="form-control" [value]='formattedAppontmentId'>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="patient" class="form-label">Patient</label>
+                                    <select [class.is-invalid]="reactiveForm.get('patient')?.invalid && reactiveForm.get('patient')?.touched" name="patient" id="patient" formControlName="patient" class="form-select form-control">
+                                        <option value="" disabled>Select</option>
+                                        <option *ngFor="let patient of patients" [value]="patient.patientId">
+                                            {{patient.patientName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.patient.touched&&reactiveForm.controls.patient.errors?.['required']">
+                                    *Patient is required
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="visitPurpose" class="form-label">Purpose of Visit</label>
+                                    <select  [class.is-invalid]="reactiveForm.get('purposeOfVisit')?.invalid && reactiveForm.get('purposeOfVisit')?.touched" name="purposeOfVisit" formControlName="purposeOfVisit" id="visitPurpose" class="form-select">
+                                        <option value='' selected>Select</option>
+                                        <option *ngFor="let option of purposeOfVisit" [value]="option.purpose">
+                                            {{ option.purpose }}
+                                          </option>
+                                    </select>
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.purposeOfVisit.touched&&reactiveForm.controls.date.errors?.['required']">
+                                    *Purpose of visit is required
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="doctor" class="form-label">Doctor</label>
+                                    <select [class.is-invalid]="reactiveForm.get('doctor')?.invalid && reactiveForm.get('doctor')?.touched" name="doctorId" id="doctor" formControlName="doctor" class="form-select form-control">
+                                        <option value="" disabled>Select</option>
+                                        <option *ngFor="let doctor of doctors" [value]="doctor.doctorId">
+                                            {{doctor.firstName}} {{doctor.lastName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.doctor.touched&&reactiveForm.controls.doctor.errors?.['required']">
+                                    *Doctor is required
+                                </small>
+                            </div>                            
+                        </div>
+
+                        <!-- Date Picker -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="appointmentDate" class="form-label">Date</label>
+                                    <input [class.is-invalid]="reactiveForm.get('date')?.invalid && reactiveForm.get('date')?.touched" name="date" formControlName="date" type="date" class="form-control" id="appointmentDate" />
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.date.touched&&reactiveForm.controls.date.errors?.['required']">
+                                    *Date is required
+                                </small>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.date.touched&&reactiveForm.controls.date.errors?.['pastDate']">
+                                    *Date can not be in past
+                                </small>
+                                  <small class="text-danger small" *ngIf="reactiveForm.controls.date.touched && reactiveForm.controls.date.errors?.['futureDateExceeded']">
+                                    *Date can not exceed 30 days in future
+                                  </small>
+                            </div>
+                            <!-- Time Picker -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="appointmentTime" class="form-label">Time</label>
+                                    <input [class.is-invalid]="reactiveForm.get('time')?.invalid && reactiveForm.get('time')?.touched" name="time" formControlName="time" type="time" class="form-control" id="appointmentTime" />
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.time.touched&&reactiveForm.controls.time.hasError('required') && reactiveForm.controls.time.touched">
+                                    *Time is required
+                                </small>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.time.touched&&reactiveForm.controls.time.hasError('timeInPast') && reactiveForm.controls.time.touched">
+                                    *Time can not be in Past
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="patientEmail" class="form-label">Email</label>
+                                    <input [class.is-invalid]="reactiveForm.get('email')?.invalid && reactiveForm.get('email')?.touched"  name="email" formControlName="email" type="email" class="form-control" id="patientEmail" placeholder="Enter email">
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.email.touched&&reactiveForm.controls.email.errors?.['required']">
+                                    *Email is required
+                                </small>
+                                  <small class="text-danger small" *ngIf="reactiveForm.controls.email.touched&&reactiveForm.controls.email.errors?.['email']">
+                                    *Enter valid email
+                                  </small>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="patientPhone" class="form-label">Mobile Number</label>
+                                    <input [class.is-invalid]="reactiveForm.get('phone')?.invalid && reactiveForm.get('phone')?.touched"  name="phone" formControlName="phone" type="text" class="form-control" id="patientPhone" placeholder="Enter phone number">
+                                </div>
+                                <small class="text-danger small" *ngIf="reactiveForm.controls.phone.touched&&reactiveForm.controls.phone.errors?.['required']">
+                                    *Mobile number is required
+                                </small>
+                                  <small class="text-danger small" *ngIf="reactiveForm.controls.phone.touched&&reactiveForm.controls.phone.errors?.['pattern']">
+                                    *Enter a valid Mobile number with +91
+                                  </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea [class.is-invalid]="reactiveForm.get('date')?.invalid && reactiveForm.get('message')?.touched" name="message" formControlName="message" name="message" class="form-control" id="message" rows="4" placeholder="Enter any message"></textarea>
+                            <small class="text-danger small" *ngIf="reactiveForm.controls.message.touched&&reactiveForm.controls.message.errors?.['required']">
+                                *Message is required
+                            </small>
+                            <small class="text-danger small" *ngIf="reactiveForm.controls.message.touched && reactiveForm.controls.message.errors?.['maxlength']">
+                                *Message cannot exceed 155 characters
+                            </small>
+                        </div>
+                        
+                        <div class="container mt-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="status" id="active" value="active">
+                                    <label class="form-check-label" for="active">Active</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="status" id="inactive" value="inactive">
+                                    <label class="form-check-label" for="inactive">Inactive</label>
+                                </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button [disabled]="reactiveForm.invalid" type="submit" class="btn btn-primary">Edit Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

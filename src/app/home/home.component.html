@@ -1,0 +1,180 @@
+<div class="container mt-3">
+    <div class="row">
+        <!-- Dash Widget 1 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="dash-widget-bg1">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="dash-widget-info text-end">
+                            <h3>{{totalAppointments || 0}}</h3>
+                            <span class="widget-title1">Appointments <i class="fas fa-check"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dash Widget 2 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="dash-widget-bg2">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="dash-widget-info text-end">
+                            <h3>{{totalScheduledAppointments}}</h3>
+                            <span class="widget-title2">Scheduled <i class="fas fa-check"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dash Widget 3 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="dash-widget-bg3">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="dash-widget-info text-end">
+                            <h3>{{totalCancelledAppointments}}</h3>
+                            <span class="widget-title3">Cancelled <i class="fas fa-check"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Dash Widget 4 -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="dash-widget-bg4">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="dash-widget-info text-end">
+                            <h3>{{totalClosedAppointments}}</h3>
+                            <span class="widget-title4">Closed <i class="fas fa-check"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments Section -->
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h4 class="card-title">Appointments</h4>
+                    <a [routerLink]="['/appointments']" routerLinkActive="router-link-active"  class="btn btn-primary">View all</a>
+                </div>
+                <div class="card-body p-0" *ngIf="Appointments.length > 0; else noAppointments">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="d-none">
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Name</th>
+                                    <th>Timing</th>
+                                    <th class="text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let appointment of getLimitedAppointments()">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar">{{patientDetails[appointment.patientId].name.charAt(0)}}</div>
+                                            <div class="ms-3">
+                                                <h5 class="mb-1">
+                                                    <a href="#">{{ patientDetails[appointment.patientId].name }}</a>
+                                                </h5>
+                                                <small>{{ patientDetails[appointment.patientId].state }},{{patientDetails[appointment.patientId].country}}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p>Appointment With Dr. {{ doctorDetails[appointment.doctorId].name }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ appointment.time }}</p>
+                                    </td>
+                                    <td>
+                                        <span [ngClass]="{
+                                            'custom-badge': true,
+                                            'status-red': appointment.status !== AppointmentStatus.Scheduled,
+                                            'status-green': appointment.status === AppointmentStatus.Scheduled
+                                          }">
+                                          {{ appointment.status === AppointmentStatus.Scheduled ? 'Active' : 'Inactive' }}
+                                        </span>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <ng-template #noAppointments>
+                    <p class="text-center">No upcoming appointments</p>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Doctors and Patients Section (Stacked) -->
+        <div class="col-lg-4 mt-4">
+            <!-- Doctors Section -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h4 class="card-title mb-0">Doctors</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush contact-list">
+                        <li class="list-group-item" *ngFor="let doctor of doctors">
+                            <div class="d-flex align-items-center">
+                                <div class="avatarDoctor me-3">{{doctor.firstName.charAt(0)}}</div>
+                                <div>
+                                    <h6 class="mb-0">Dr. {{doctor.firstName}} {{doctor.lastName}}</h6>
+                                    <small>{{doctor.qualification}},{{doctor.specialization}}</small>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- Additional doctors can be added here -->
+                    </ul>
+                </div>
+                <div class="card-footer text-center bg-white">
+                    <a [routerLink]="['/doctor']" class="text-muted">View all Doctors</a>
+                </div>
+            </div>
+
+<!-- Patients Section (Stacked below Doctors) -->
+<div class="card">
+    <div class="card-header bg-white">
+        <h4 class="card-title mb-0">Patients</h4>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush contact-list">
+            <li class="list-group-item" *ngFor="let patient of patients">
+                <div class="d-flex align-items-center">
+                    <div class="avatarPatient me-3">{{patient.patientName.charAt(0)}}</div>
+                    <div>
+                        <h5 class="mb-0">{{patient.patientName}}</h5>
+                        <small>{{patient.state}}, {{patient.country}}</small>
+                    </div>
+                </div>
+            </li>
+            <!-- Additional patients can be added here -->
+        </ul>
+    </div>
+    <div class="card-footer text-center bg-white">
+        <a [routerLink]="['/patients']" class="text-muted">View all Patients</a>
+    </div>
+            </div>
+        </div>
+
+
+        
+    </div>
+</div>
